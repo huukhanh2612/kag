@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hình Ảnh & Kỷ Niệm - Trẫm & Hoàng Hậu</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-top:#eaf6ff; --bg-bottom:#f7fbff;
+    --primary:#4a90d2; --primary-dark:#2f6fa8; --primary-light:#bfe3fb;
+    --card:#ffffff; --text:#1f3a52; --text-soft:#5b7a94; --border:#cfe8fb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI', sans-serif; color:var(--text);
+    background:linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+    min-height:100vh; text-align:center;
+  }
+  .nav{ position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.88); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+  .nav-wrap{ max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 20px; }
+  .brand{ font-family:'Quicksand',sans-serif; font-weight:700; color:var(--primary-dark); text-decoration:none; font-size:1.15em; }
+  .nav-links{ display:flex; gap:22px; }
+  .nav-link{ color:var(--text-soft); text-decoration:none; font-weight:600; padding:6px 2px; border-bottom:2px solid transparent; transition:.2s; }
+  .nav-link:hover{ color:var(--primary-dark); }
+  .nav-link.is-active{ color:var(--primary-dark); border-bottom-color:var(--primary); }
+  @media (max-width:480px){ .nav-wrap{flex-direction:column; gap:8px;} .nav-links{gap:14px; font-size:.92em;} }
+
+  .header-image{ width:100%; max-height:380px; object-fit:cover; }
+
+  h1{ font-family:'Quicksand',sans-serif; font-weight:700; font-size:2.1em; margin:26px 0 10px; color:var(--primary-dark); }
+
+  #counter{
+    font-size:1.1em; background:var(--card); padding:14px 20px; border:2px dashed var(--primary-light);
+    border-radius:14px; margin:16px auto 26px; max-width:520px; box-shadow:0 4px 14px rgba(74,144,210,0.08);
+  }
+
+  .slide{
+    display:none; font-size:1.1em; background:var(--card); padding:22px; border-radius:16px;
+    margin:0 auto 20px; max-width:680px; box-shadow:0 4px 14px rgba(74,144,210,0.08);
+    opacity:0; transition:opacity .5s ease; border:1px solid var(--border);
+  }
+  .slide.active{ display:block; opacity:1; }
+
+  .heart{ font-size:2.4em; color:var(--primary); animation:pulse 1.8s infinite; }
+  @keyframes pulse{ 0%{transform:scale(1);opacity:.7;} 50%{transform:scale(1.15);opacity:1;} 100%{transform:scale(1);opacity:.7;} }
+
+  .hint{ font-size:.85em; color:var(--text-soft); margin-bottom:36px; }
+
+  .section-title{ margin-top:34px; font-family:'Quicksand',sans-serif; font-weight:700; font-size:1.3em; color:var(--primary-dark); }
+
+  .gallery{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(110px, 1fr)); gap:10px;
+    max-width:900px; margin:20px auto; padding:0 16px;
+  }
+  .gallery img{
+    width:100%; height:auto; aspect-ratio:3/4; object-fit:cover; border-radius:12px;
+    background:#fff; box-shadow:0 2px 6px rgba(74,144,210,0.15); transition:transform .3s ease;
+  }
+  .gallery img:hover{ transform:scale(1.05); }
+
+  .note-container{
+    max-width:680px; margin:50px auto 40px; background:var(--card); padding:22px; border-radius:16px;
+    box-shadow:0 4px 14px rgba(74,144,210,0.08); text-align:left; border:1px solid var(--border);
+  }
+  .note-container h2{ text-align:center; color:var(--primary-dark); font-family:'Quicksand',sans-serif; margin-top:0; }
+  .note-container input, .note-container textarea{
+    width:100%; padding:11px; margin:8px 0; border:1.5px solid var(--border); border-radius:10px;
+    font-size:1em; background:#fbfeff; font-family:inherit; color:var(--text);
+  }
+  .note-container input:focus, .note-container textarea:focus{ outline:none; border-color:var(--primary); }
+  .note-container button{
+    background:var(--primary); color:#fff; border:none; padding:10px 20px; border-radius:10px;
+    font-size:1em; font-weight:600; cursor:pointer; margin-right:10px;
+  }
+  .note-container button:hover{ background:var(--primary-dark); }
+  .note-container button.secondary{ background:#eef6fc; color:var(--primary-dark); border:1px solid var(--border); }
+  .note-container button.secondary:hover{ background:var(--primary-light); }
+
+  .note-log{ margin-top:18px; background:#fbfeff; padding:15px; border-radius:10px; border:1px dashed var(--primary-light); font-size:.95em; }
+
+  @media (max-width:480px){
+    h1{ font-size:1.7em; }
+    .slide{ font-size:1em; padding:16px; }
+    .note-container{ padding:16px; }
+  }
+</style>
+</head>
+<body onclick="nextSlide();">
+
+<nav class="nav">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">💙 Trẫm & Hoàng Hậu</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Thơ</a>
+      <a href="nhac.html" class="nav-link">Nhạc</a>
+      <a href="hinhanh.html" class="nav-link is-active">Hình Ảnh</a>
+    </div>
+  </div>
+</nav>
+
+<img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/photo_3_2025-06-26_19-11-44.jpg" alt="Hoàng hậu nương nương" class="header-image">
+<h1>Tình Sử Trẫm & Hoàng Hậu</h1>
+<div id="counter">Đang tính thời gian yêu nhau...</div>
+
+<div class="slide active">💌 <strong>Ngày đầu gặp gỡ</strong><br>Anh không nghĩ mình sẽ yêu được em...</div>
+<div class="slide">🌸 <strong>Lần đầu nắm tay</strong><br>Lần chủ động đó anh nghĩ mình đã năm trong tay cả thiên hạ.</div>
+<div class="slide">🌙 <strong>Lời quan tâm</strong><br>Lần quan tâm vu vơ đó anh nghĩ mình sẽ nhớ đến già đầu ...</div>
+<div class="slide">💍 <strong>Ngày chính thức yêu nhau – 06/06/2025</strong><br>Anh chọn ngày đẹp không phải để dễ nhớ, anh chọn ngày đẹp để mong chuyện tình mình đẹp như ngày.</div>
+<div class="slide">👑 <strong>Cùng nhau qua giông bão</strong><br>Tay trong tay, dù đời có trăm vạn đổi thay.</div>
+<div class="slide">❤️ <strong>Hiện tại</strong><br>Trẫm yêu nàng hơn bao giờ hết. Vĩnh viễn không đổi thay.</div>
+
+<div class="heart">💙</div>
+<div class="hint">(Nhấp vào màn hình để chuyển chương)</div>
+
+<div class="section-title">📷 Hình Ảnh Trẫm & Hoàng Hậu</div>
+<div class="gallery">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175004522_c1077cdb44e1775bb5e14f9241bf9960.jpg" alt="Ảnh 1">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175030992_46f34d07c2c3e27efc2dc95bf52e4042.jpg" alt="Ảnh 2">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175031497_1b2ae195c53d75e7a0fc7a5f55252aa8.jpg" alt="Ảnh 3">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175042121_710f57475a7ae9fe8de69ec69c795b51.jpg" alt="Ảnh 4">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175054425_b55d16966d242e0a4e026cf8e41c7651.jpg" alt="Ảnh 5">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175062966_54088b932d01883c9e88a6aca3035182.jpg" alt="Ảnh 6">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175064882_83e2728e1ed11f590b60f1012f4764dd.jpg" alt="Ảnh 7">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175071049_6f6bd3f6f7df4d3c2cc3aa5833ad96cb.jpg" alt="Ảnh 8">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175073560_c621ec1eae43daa710c7e94d950ec9a6.jpg" alt="Ảnh 9">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175104294_d21046c9dadd53304feeaa25f17dc4ec.jpg" alt="Ảnh 10">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175111599_bd10167b55b3758905fe9df06778ff45.jpg" alt="Ảnh 11">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175119162_be71653422f8c3981cb9193d3e172530.jpg" alt="Ảnh 12">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175124289_139ba9d802dea1c860b1d6a9487446a6.jpg" alt="Ảnh 13">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175126371_a0b0ebf46121dbb79c3878d8c706db0b.jpg" alt="Ảnh 14">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175136647_bdb230df3d32e6645e4141d73aa92ec3.jpg" alt="Ảnh 15">
+  <img src="https://raw.githubusercontent.com/huukhanh2612/kanthy/main/z6795175137787_07ec7ecd0b5692fe0aaa196127a9482b.jpg" alt="Ảnh 16">
+</div>
+
+<div class="note-container">
+  <h2>📖 Ghi chú tình yêu hôm nay</h2>
+  <input type="text" id="nickname" placeholder="Tên người ghi chú (ví dụ: Trẫm, Hoàng hậu...)">
+  <textarea id="noteText" placeholder="Hôm nay là một ngày đáng nhớ..."></textarea>
+  <button type="button" onclick="addNote()">💌 Lưu ghi chú</button>
+  <button type="button" class="secondary" onclick="clearFields()">🧽 Xóa nhập</button>
+  <div id="noteLog" class="note-log"></div>
+</div>
+
+<script>
+  const sheetAPI = "https://script.google.com/macros/s/AKfycbzY87QwdibmLtbm9MvQDMQ4FvZIjLAfkzzO3QwByqTwNOOFqveDbOs-PUH7cBB6xCM5/exec";
+  const sheetDataAPI = "https://docs.google.com/spreadsheets/d/1UXWqhwt3yp5yRWGYb5tFhcqrsB-MEi-E-3R5dbIxwpQ/gviz/tq?tqx=out:json";
+
+  function addNote() {
+    const nick = document.getElementById('nickname').value.trim();
+    const text = document.getElementById('noteText').value.trim();
+    if (!nick || !text) return alert("Vui lòng điền cả tên và ghi chú.");
+    fetch(sheetAPI, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sheet: "GhiChu", name: nick, note: text })
+    })
+    .then(res => res.text())
+    .then(() => {
+      document.getElementById('nickname').value = "";
+      document.getElementById('noteText').value = "";
+      loadNotes();
+    })
+    .catch(() => alert("❌ Gửi thất bại."));
+  }
+
+  function loadNotes() {
+    fetch(sheetDataAPI)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+        let html = "";
+        rows.slice().reverse().forEach(row => {
+          const name = row.c[0]?.v || "Ẩn danh";
+          const time = row.c[1]?.f || "Không rõ";
+          const note = row.c[2]?.v || "";
+          html += `<div class="note-entry">🖋️ <strong>${name}</strong> (${time}):<br>${note.replace(/\n/g, "<br>")}<hr style="border-color:var(--border)"></div>`;
+        });
+        document.getElementById("noteLog").innerHTML = html;
+      });
+  }
+
+  function clearFields() {
+    document.getElementById('nickname').value = "";
+    document.getElementById('noteText').value = "";
+    document.getElementById('nickname').focus();
+  }
+
+  function updateCounter() {
+    const loveStartDate = new Date(2025, 5, 6);
+    const now = new Date();
+    const diff = now - loveStartDate;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    document.getElementById("counter").innerHTML = `⏳ Đã bên nhau được <strong>${days}</strong> ngày, <strong>${hours}</strong> giờ, <strong>${minutes}</strong> phút, <strong>${seconds}</strong> giây 💙`;
+  }
+
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+  function showSlide(index) {
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+  }
+  function nextSlide() {
+    current = (current + 1) % slides.length;
+    showSlide(current);
+  }
+
+  setInterval(updateCounter, 1000);
+  updateCounter();
+  window.onload = loadNotes;
+</script>
+</body>
+</html>

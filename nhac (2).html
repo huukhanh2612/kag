@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nhạc - Trẫm & Hoàng Hậu</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-top:#eaf6ff; --bg-bottom:#f7fbff;
+    --primary:#4a90d2; --primary-dark:#2f6fa8; --primary-light:#bfe3fb;
+    --card:#ffffff; --text:#1f3a52; --text-soft:#5b7a94; --border:#cfe8fb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI', sans-serif; color:var(--text);
+    background:linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+    min-height:100vh;
+  }
+  .nav{ position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.88); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+  .nav-wrap{ max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 20px; }
+  .brand{ font-family:'Quicksand',sans-serif; font-weight:700; color:var(--primary-dark); text-decoration:none; font-size:1.15em; }
+  .nav-links{ display:flex; gap:22px; }
+  .nav-link{ color:var(--text-soft); text-decoration:none; font-weight:600; padding:6px 2px; border-bottom:2px solid transparent; transition:.2s; }
+  .nav-link:hover{ color:var(--primary-dark); }
+  .nav-link.is-active{ color:var(--primary-dark); border-bottom-color:var(--primary); }
+  @media (max-width:480px){ .nav-wrap{flex-direction:column; gap:8px;} .nav-links{gap:14px; font-size:.92em;} }
+
+  .container{ max-width:820px; margin:0 auto; padding:30px 20px 60px; display:flex; flex-direction:column; align-items:center; }
+
+  header.hero{ text-align:center; margin-bottom:20px; }
+  header.hero h1{ font-family:'Quicksand',sans-serif; font-weight:700; font-size:2.1em; color:var(--primary-dark); margin:0 0 6px; }
+  header.hero p{ color:var(--text-soft); margin:0; }
+
+  .player-card{
+    background:var(--card); border:1px solid var(--border); border-radius:20px; padding:28px;
+    box-shadow:0 4px 14px rgba(74,144,210,0.1); width:100%; max-width:420px; text-align:center; margin-bottom:24px;
+  }
+
+  .disc-container{
+    width:220px; height:220px; margin:0 auto; border-radius:50%;
+    background-color:var(--primary-light); background-position:center; background-size:cover;
+    border:6px solid var(--primary-light); box-shadow:0 0 18px rgba(74,144,210,0.35);
+    animation:spin 6s linear infinite; animation-play-state:paused; position:relative;
+  }
+  .disc-container::after{
+    content:""; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:46px; height:46px; background:var(--primary-dark); border-radius:50%; border:2px solid #fff;
+  }
+  .playing .disc-container{ animation-play-state:running; }
+  @keyframes spin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+  .song-title{ margin-top:18px; font-family:'Quicksand',sans-serif; font-size:1.3em; font-weight:700; color:var(--primary-dark); }
+  .song-desc{ font-size:.9em; color:var(--text-soft); margin-top:4px; }
+
+  .progress-container{ width:100%; margin-top:20px; }
+  .progress-bar{ height:8px; background:var(--primary-light); border-radius:4px; cursor:pointer; position:relative; }
+  .progress{ height:100%; width:0%; background:var(--primary); border-radius:4px; transition:width .1s linear; }
+  .time-display{ display:flex; justify-content:space-between; margin-top:6px; font-size:.8em; color:var(--text-soft); }
+
+  .controls{ margin-top:18px; display:flex; gap:14px; align-items:center; justify-content:center; }
+  .btn{
+    width:46px; height:46px; border-radius:50%; background:var(--primary-light); border:none; font-size:16px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--primary-dark);
+    transition:transform .15s, background .15s;
+  }
+  .btn:hover{ background:var(--primary); color:#fff; }
+  .btn:active{ transform:scale(0.92); }
+  #playBtn{ width:60px; height:60px; font-size:22px; background:var(--primary); color:#fff; }
+  #playBtn:hover{ background:var(--primary-dark); }
+
+  .playlist-card{
+    background:var(--card); border:1px solid var(--border); border-radius:20px; padding:20px;
+    width:100%; box-shadow:0 4px 14px rgba(74,144,210,0.08);
+  }
+  .playlist-card h2{ font-family:'Quicksand',sans-serif; text-align:center; color:var(--primary-dark); margin:0 0 14px; font-size:1.1em; }
+
+  .filter-row{ display:flex; gap:10px; margin-bottom:12px; }
+  .filter-control{
+    flex:1; padding:10px 12px; border-radius:10px; border:1.5px solid var(--border);
+    background:#fbfeff; color:var(--text); font-family:inherit; font-size:.95em;
+  }
+  .filter-control:focus{ outline:none; border-color:var(--primary); }
+
+  #playlistContent{ max-height:340px; overflow-y:auto; }
+  .song-item{
+    padding:11px 12px; margin-bottom:8px; background:#f3f9fe; border:1px solid var(--border);
+    border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+    transition:background .15s;
+  }
+  .song-item:hover{ background:var(--primary-light); }
+  .song-item.active{ background:var(--primary); color:#fff; border-color:var(--primary); }
+  .song-item small{ opacity:.8; }
+  .dl-btn{
+    width:30px; height:30px; border-radius:50%; border:none; background:#fff; color:var(--primary-dark);
+    font-size:12px; cursor:pointer; flex-shrink:0; margin-left:8px;
+  }
+
+  @media (max-width:480px){
+    .disc-container{ width:170px; height:170px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">💙 Trẫm & Hoàng Hậu</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Thơ</a>
+      <a href="nhac.html" class="nav-link is-active">Nhạc</a>
+      <a href="hinhanh.html" class="nav-link">Hình Ảnh</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container" id="playerArea">
+  <header class="hero">
+    <h1>🎵 Nhạc Của Anh</h1>
+    <p>Những bài hát Trẫm viết dành tặng Hoàng Hậu</p>
+  </header>
+
+  <div class="player-card">
+    <div class="disc-container" id="disc"></div>
+    <div class="song-title" id="songTitle">Đang tải...</div>
+    <div class="song-desc" id="songDesc"></div>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">
+        <div class="progress" id="progress"></div>
+      </div>
+      <div class="time-display">
+        <span id="currentTime">0:00</span>
+        <span id="durationTime">0:00</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prevBtn">⏮</button>
+      <button class="btn" id="playBtn">▶️</button>
+      <button class="btn" id="nextBtn">⏭</button>
+      <button class="btn" id="shuffleBtn">🔀</button>
+    </div>
+  </div>
+
+  <div class="playlist-card">
+    <h2>📀 Danh sách bài hát</h2>
+    <div class="filter-row">
+      <input type="text" id="searchInput" placeholder="Tìm tên bài hát..." onkeyup="filterSongs()" class="filter-control">
+      <select id="genreFilter" onchange="filterSongs()" class="filter-control"></select>
+    </div>
+    <div id="playlistContent"></div>
+  </div>
+</div>
+
+<audio id="audio" crossorigin="anonymous"></audio>
+
+<script>
+// Dữ liệu bài hát (giữ nguyên nội dung cũ của bạn)
+const songs = [
+  { title: "Chúng Ta", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Chúng ta _.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG", genre: "SUY" },
+  { title: "Anh Đang Cố", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Anh đang cố.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_m4gf0bm4gf0bm4gf.png", genre: "SUY" },
+  { title: "Ngày Đông Lạnh", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Ngày đông lạnh.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/41820ab49fc16eb49b50bdd822cdd496535b2843/Gemini_Generated_Image_h1urogh1urogh1ur.png", genre: "SUY" },
+  { title: "Xuôi Theo Dòng", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Xuôi theo sông.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg", genre: "SUY" },
+  { title: "Kéo Anh Tôi Ra", desc: "Lyrics: OneKang • Artist: Rick", file: "Kéo Anh Tôi Ra.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/8f816a23e19e9041c7cf71b11a907a864c34c03e/photo_2025-03-04_18-40-42.jpg", genre: "CỨU" },
+  { title: "Chạy Khỏi Tao", desc: "Lyrics: OneKang • Artist: Bảo Black", file: "Chạy khỏi tao.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/ee11147f7324130dfdae739dea2204f5c7f63917/diaquay.jpg", genre: "SUY" },
+  { title: "Còn Ngoại Đâu", desc: "Lyrics: OneKang • Artist: BB.A", file: "Còn ngoại đâu _.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg", genre: "SUY" },
+  { title: "Quên Ngoại", desc: "Lyrics: OneKang • Artist: QuânBy", file: "Quên Ngoại.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/z7280227127599_19b782c2166dab57ad1468f645d2f276.jpg", genre: "SUY" },
+  { title: "Sao Em Lại Chọn Khó Khăn", desc: "Lyrics: OneKang • Artist: ĐạiTo", file: "Sao em lại chọn khó khăn _.mp3", cover: "https://raw.githubusercontent.com/huukhanh2612/kangthy/02005d4f3bd9cdd96bb59add285779b40576b5ad/IMG_5366.JPG", genre: "SUY" },
+  { title: "Tội Của Con", desc: "Lyrics: OneKang • Artist: BB.A", file: "Tội của con (1).mp3", cover: "https://i.ibb.co/bYZHqWx/photo-2025-05-28-12-57-43.jpg", genre: "SUY" },
+];
+
+let currentIndex = 0;
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("playBtn");
+
+function filterSongs() {
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const genre = document.getElementById("genreFilter").value;
+  const filtered = songs.filter(s => s.title.toLowerCase().includes(search) && (genre === "" || s.genre === genre));
+  renderPlaylist(filtered);
+}
+
+function renderPlaylist(list) {
+  document.getElementById("playlistContent").innerHTML = list.map(s => {
+    const idx = songs.findIndex(x => x.file === s.file);
+    return `
+      <div class="song-item ${idx === currentIndex ? 'active' : ''}" onclick="playSong(${idx})">
+        <div style="flex:1"><b>${s.title}</b><br><small>${s.genre}</small></div>
+        <button class="dl-btn" onclick="event.stopPropagation(); window.open('${s.file}')">📥</button>
+      </div>`;
+  }).join('');
+}
+
+function loadSong(i) {
+  currentIndex = i;
+  audio.src = songs[i].file;
+  document.getElementById("songTitle").innerText = songs[i].title;
+  document.getElementById("songDesc").innerText = songs[i].desc;
+  document.getElementById("disc").style.backgroundImage = `url('${songs[i].cover}')`;
+  document.getElementById("progress").style.width = "0%";
+  document.getElementById("currentTime").innerText = "0:00";
+  document.getElementById("durationTime").innerText = "0:00";
+  filterSongs();
+}
+
+function playSong(i) {
+  loadSong(i);
+  audio.play().catch(() => {});
+  document.getElementById("playerArea").classList.add("playing");
+  playBtn.textContent = '⏸️';
+}
+
+playBtn.onclick = () => {
+  if (audio.paused) { audio.play(); document.getElementById("playerArea").classList.add("playing"); playBtn.textContent = '⏸️'; }
+  else { audio.pause(); document.getElementById("playerArea").classList.remove("playing"); playBtn.textContent = '▶️'; }
+};
+
+document.getElementById("shuffleBtn").onclick = () => playSong(Math.floor(Math.random() * songs.length));
+document.getElementById("nextBtn").onclick = () => playSong((currentIndex + 1) % songs.length);
+document.getElementById("prevBtn").onclick = () => playSong((currentIndex - 1 + songs.length) % songs.length);
+
+audio.ontimeupdate = () => {
+  if (audio.duration) {
+    document.getElementById("progress").style.width = (audio.currentTime / audio.duration) * 100 + "%";
+    document.getElementById("currentTime").innerText = Math.floor(audio.currentTime/60) + ":" + ("0"+Math.floor(audio.currentTime%60)).slice(-2);
+  }
+};
+audio.onended = () => document.getElementById("nextBtn").click();
+audio.onloadedmetadata = () => {
+  if (audio.duration) {
+    document.getElementById("durationTime").innerText = Math.floor(audio.duration/60) + ":" + ("0"+Math.floor(audio.duration%60)).slice(-2);
+  }
+};
+document.getElementById("progressBar").onclick = (e) => { audio.currentTime = (e.offsetX / e.currentTarget.clientWidth) * audio.duration; };
+
+const genres = ["", ...new Set(songs.map(s => s.genre))];
+document.getElementById("genreFilter").innerHTML = genres.map(g => `<option value="${g}">${g || "Tất cả thể loại"}</option>`).join('');
+loadSong(0);
+</script>
+</body>
+</html>

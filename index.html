@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thơ Tình - Trẫm & Hoàng Hậu</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-top:#eaf6ff; --bg-bottom:#f7fbff;
+    --primary:#4a90d2; --primary-dark:#2f6fa8; --primary-light:#bfe3fb;
+    --card:#ffffff; --text:#1f3a52; --text-soft:#5b7a94; --border:#cfe8fb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI', sans-serif; color:var(--text);
+    background:linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+    min-height:100vh;
+  }
+  /* Thanh điều hướng dùng chung */
+  .nav{ position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.88); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+  .nav-wrap{ max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 20px; }
+  .brand{ font-family:'Quicksand',sans-serif; font-weight:700; color:var(--primary-dark); text-decoration:none; font-size:1.15em; }
+  .nav-links{ display:flex; gap:22px; }
+  .nav-link{ color:var(--text-soft); text-decoration:none; font-weight:600; padding:6px 2px; border-bottom:2px solid transparent; transition:.2s; }
+  .nav-link:hover{ color:var(--primary-dark); }
+  .nav-link.is-active{ color:var(--primary-dark); border-bottom-color:var(--primary); }
+  @media (max-width:480px){ .nav-wrap{flex-direction:column; gap:8px;} .nav-links{gap:14px; font-size:.92em;} }
+
+  .container{ max-width:700px; margin:0 auto; padding:30px 20px 60px; }
+
+  header.hero{ text-align:center; margin-bottom:30px; }
+  header.hero h1{ font-family:'Quicksand',sans-serif; font-weight:700; font-size:2.2em; color:var(--primary-dark); margin:0 0 6px; }
+  header.hero p{ color:var(--text-soft); margin:0; }
+
+  .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:22px; box-shadow:0 4px 14px rgba(74,144,210,0.08); }
+
+  .form-card{ margin-bottom:34px; }
+  .form-card h2{ font-family:'Quicksand',sans-serif; text-align:center; color:var(--primary-dark); margin-top:0; font-size:1.2em; }
+  .row{ display:flex; gap:10px; }
+  .row > *{ flex:1; }
+  input, textarea{
+    width:100%; padding:11px 12px; margin:8px 0; border:1.5px solid var(--border); border-radius:10px;
+    font-size:1em; font-family:inherit; background:#fbfeff; color:var(--text);
+  }
+  input:focus, textarea:focus{ outline:none; border-color:var(--primary); }
+  textarea{ min-height:120px; resize:vertical; line-height:1.5; }
+
+  .btn{
+    background:var(--primary); color:#fff; border:none; padding:10px 22px; border-radius:10px;
+    font-size:1em; font-weight:600; cursor:pointer; margin-top:4px; margin-right:8px; transition:background .2s;
+  }
+  .btn:hover{ background:var(--primary-dark); }
+  .btn.secondary{ background:#eef6fc; color:var(--primary-dark); border:1px solid var(--border); }
+  .btn.secondary:hover{ background:var(--primary-light); }
+
+  .poems-title{ text-align:center; font-family:'Quicksand',sans-serif; color:var(--primary-dark); margin:36px 0 16px; font-size:1.2em; }
+
+  .poem-entry{ margin-bottom:16px; padding-bottom:16px; border-bottom:1px dashed var(--border); }
+  .poem-entry:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .poem-title{ font-family:'Quicksand',sans-serif; font-weight:700; color:var(--primary-dark); font-size:1.1em; margin-bottom:4px; }
+  .poem-meta{ font-size:.85em; color:var(--text-soft); margin-bottom:8px; }
+  .poem-content{ white-space:pre-wrap; line-height:1.7; }
+
+  .empty-hint{ text-align:center; color:var(--text-soft); font-style:italic; padding:10px 0; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-wrap">
+    <a href="index.html" class="brand">💙 Trẫm & Hoàng Hậu</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link is-active">Thơ</a>
+      <a href="nhac.html" class="nav-link">Nhạc</a>
+      <a href="hinhanh.html" class="nav-link">Hình Ảnh</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <header class="hero">
+    <h1>📜 Những Vần Thơ</h1>
+    <p>Nơi lưu lại những câu thơ, bài thơ Trẫm viết cho Hoàng Hậu</p>
+  </header>
+
+  <div class="card form-card">
+    <h2>✍️ Đăng một bài thơ mới</h2>
+    <div class="row">
+      <input type="text" id="poemAuthor" placeholder="Tên người đăng (vd: Trẫm)">
+      <input type="text" id="poemTitle" placeholder="Tiêu đề bài thơ">
+    </div>
+    <textarea id="poemContent" placeholder="Viết bài thơ ở đây..."></textarea>
+    <div>
+      <button type="button" class="btn" onclick="addPoem()">💌 Đăng thơ</button>
+      <button type="button" class="btn secondary" onclick="clearPoemForm()">🧽 Xóa nhập</button>
+    </div>
+  </div>
+
+  <h2 class="poems-title">📖 Các bài thơ đã đăng</h2>
+  <div class="card" id="poemList">
+    <div class="empty-hint">Đang tải danh sách thơ...</div>
+  </div>
+</div>
+
+<script>
+  // === CẤU HÌNH BACKEND (Google Sheets) ===
+  // Dùng chung Apps Script với trang Hình Ảnh, nhưng ghi vào sheet riêng tên "Tho".
+  const sheetAPI = "https://script.google.com/macros/s/AKfycbzY87QwdibmLtbm9MvQDMQ4FvZIjLAfkzzO3QwByqTwNOOFqveDbOs-PUH7cBB6xCM5/exec";
+  const spreadsheetId = "1UXWqhwt3yp5yRWGYb5tFhcqrsB-MEi-E-3R5dbIxwpQ";
+
+  // ⚠️ QUAN TRỌNG: thay THO_GID bằng gid thật của sheet "Tho" sau khi tạo tab mới trong Google Sheet.
+  // Cách lấy gid: mở sheet "Tho" trên trình duyệt, nhìn cuối URL có dạng ...#gid=123456789
+  const thoGid = "THO_GID";
+  const sheetDataAPI = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&gid=${thoGid}`;
+
+  function addPoem() {
+    const author = document.getElementById('poemAuthor').value.trim();
+    const title = document.getElementById('poemTitle').value.trim();
+    const content = document.getElementById('poemContent').value.trim();
+    if (!author || !content) return alert("Vui lòng điền tên và nội dung bài thơ.");
+
+    fetch(sheetAPI, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sheet: "Tho", name: author, title: title, note: content })
+    })
+    .then(res => res.text())
+    .then(() => {
+      clearPoemForm();
+      loadPoems();
+    })
+    .catch(() => alert("❌ Đăng thơ thất bại. Kiểm tra lại Apps Script."));
+  }
+
+  function loadPoems() {
+    fetch(sheetDataAPI)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+        const listEl = document.getElementById("poemList");
+        if (!rows || rows.length === 0) {
+          listEl.innerHTML = `<div class="empty-hint">Chưa có bài thơ nào. Hãy là người đầu tiên đăng! 💙</div>`;
+          return;
+        }
+        let html = "";
+        rows.slice().reverse().forEach(row => {
+          const name = row.c[0]?.v || "Ẩn danh";
+          const time = row.c[1]?.f || "";
+          const title = row.c[2]?.v || "Không đề";
+          const content = row.c[3]?.v || "";
+          html += `
+            <div class="poem-entry">
+              <div class="poem-title">${title}</div>
+              <div class="poem-meta">🖋️ ${name}${time ? " • " + time : ""}</div>
+              <div class="poem-content">${content}</div>
+            </div>`;
+        });
+        listEl.innerHTML = html;
+      })
+      .catch(() => {
+        document.getElementById("poemList").innerHTML = `<div class="empty-hint">Chưa kết nối được với danh sách thơ. Kiểm tra lại cấu hình gid.</div>`;
+      });
+  }
+
+  function clearPoemForm() {
+    document.getElementById('poemAuthor').value = "";
+    document.getElementById('poemTitle').value = "";
+    document.getElementById('poemContent').value = "";
+  }
+
+  window.onload = loadPoems;
+</script>
+</body>
+</html>
